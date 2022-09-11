@@ -1,7 +1,6 @@
-class Modal {
-    constructor() {
+import Slider from "./modules/slider";
 
-    }
-}
-
-export default {Modal};
+window.addEventListener("DOMContentLoaded", () => {
+    const slider = new Slider(".page", ".next");
+    slider.render();
+});
