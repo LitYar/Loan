@@ -1,12 +1,10 @@
-export default class Slider {
+import Slider from "./slider";
 
+export default class MainSlider extends Slider {
     constructor(page, btns) {
-        this.page = document.querySelector(page);
-        this.slides = this.page.children;
-        this.btns = document.querySelectorAll(btns);
-        this.slideIndex = 1;
+        super(page, btns);
     }
-
+    
     showSlides(n) {
 
         if (n > this.slides.length) {
@@ -23,6 +21,8 @@ export default class Slider {
                     this.form.style.opacity = '1';
                     this.form.classList.add("slideInUp");
                 },3000);
+            } else {
+                this.form.classList.remove("slideInUp");
             }
         } catch(e){}
         
