@@ -541,6 +541,8 @@ var _videoplayer = require("./modules/videoplayer");
 var _videoplayerDefault = parcelHelpers.interopDefault(_videoplayer);
 var _difference = require("./modules/difference");
 var _differenceDefault = parcelHelpers.interopDefault(_difference);
+var _form = require("./modules/form");
+var _formDefault = parcelHelpers.interopDefault(_form);
 window.addEventListener("DOMContentLoaded", ()=>{
     const player = new (0, _videoplayerDefault.default)(".showup .play", ".overlay");
     const slider = new (0, _sliderMainDefault.default)({
@@ -574,9 +576,10 @@ window.addEventListener("DOMContentLoaded", ()=>{
     feedSlider.init();
     player.init();
     new (0, _differenceDefault.default)(".officerold", ".officernew", ".officer__card-item").init();
+    new (0, _formDefault.default)(".form").init();
 });
 
-},{"./modules/slider/slider-main":"6i5fQ","./modules/slider/slider-mini":"hlUl8","./modules/videoplayer":"lQYUm","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./modules/difference":"lv4ll"}],"6i5fQ":[function(require,module,exports) {
+},{"./modules/slider/slider-main":"6i5fQ","./modules/slider/slider-mini":"hlUl8","./modules/videoplayer":"lQYUm","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./modules/difference":"lv4ll","./modules/form":"gyZuc"}],"6i5fQ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _slider = require("./slider");
@@ -824,6 +827,104 @@ class Difference {
     }
 }
 exports.default = Difference;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gyZuc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class Form {
+    constructor(forms){
+        this.forms = document.querySelectorAll(forms);
+        this.inputs = document.querySelectorAll("input");
+        this.message = {
+            load: "Загрузка...",
+            done: "Данные отправленны!",
+            fail: "Ошибка..."
+        };
+        this.path = "assets/question.php";
+    }
+    cleareInput() {
+        this.inputs.forEach((el)=>{
+            el.value = "";
+        });
+    }
+    checkMailInputs() {
+        const mailInputs = document.querySelectorAll('[type="email"]');
+        mailInputs.forEach((input)=>{
+            input.addEventListener("keypress", function(e) {
+                if (e.key.match(/[^a-z 0-9 @ \.]/ig)) e.preventDefault();
+            });
+        });
+    }
+    initMask() {
+        let setCursorPosition = (pos, elem)=>{
+            elem.focus();
+            if (elem.setSelectionRange) elem.setSelectionRange(pos, pos);
+            else if (elem.createTextRange) {
+                let range = elem.createTextRange();
+                range.collapse(true);
+                range.moveEnd("character", pos);
+                range.moveStart("character", pos);
+                range.select();
+            }
+        };
+        function createMask(event) {
+            let matrix = "+_ (___) ___-__-__", i = 0, def = matrix.replace(/\D/g, ""), val = this.value.replace(/\D/g, "");
+            if (def.length >= val.length) val = def;
+            this.value = matrix.replace(/./g, function(a) {
+                return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
+            });
+            if (event.type === "blur") {
+                if (this.value.length == 2) this.value = "";
+            } else setCursorPosition(this.value.length, this);
+        }
+        let inputs = document.querySelectorAll('[name="phone"]');
+        inputs.forEach((input)=>{
+            input.addEventListener("input", createMask);
+            input.addEventListener("focus", createMask);
+            input.addEventListener("blur", createMask);
+        });
+    }
+    async postData(url, data) {
+        let result = await fetch(url, {
+            method: "POST",
+            body: data
+        });
+        return await result.text();
+    }
+    init() {
+        this.checkMailInputs();
+        this.initMask();
+        this.forms.forEach((el)=>{
+            el.addEventListener("submit", (e)=>{
+                e.preventDefault();
+                let statusMessage = document.createElement("div");
+                statusMessage.style.cssText = `
+                    margin-top: 12px;
+                    font-size: 18px;
+                    color: red;
+                `;
+                el.appendChild(statusMessage);
+                statusMessage.innerHTML = this.message.load;
+                const formData = new FormData(el);
+                setTimeout(()=>{
+                    this.postData(this.path, formData).then((response)=>{
+                        console.log(response);
+                        statusMessage.innerHTML = this.message.done;
+                    }).catch((error)=>{
+                        console.error(error);
+                        statusMessage.innerHTML = this.message.fail;
+                    }).finally(()=>{
+                        setTimeout(()=>{
+                            this.cleareInput();
+                            statusMessage.remove();
+                        }, 4000);
+                    });
+                }, 2000);
+            });
+        });
+    }
+}
+exports.default = Form;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["jQVXF","1SICI"], "1SICI", "parcelRequire181e")
 
