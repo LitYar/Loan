@@ -1,11 +1,13 @@
 export default class Difference {
     constructor(oldOfficer, newOfficer, item) {
-        this.oldOfficer = document.querySelector(oldOfficer);
+        try {
+            this.oldOfficer = document.querySelector(oldOfficer);
         this.newOfficer = document.querySelector(newOfficer);
         this.oldItem = this.oldOfficer.querySelectorAll(item);
         this.newItem = this.newOfficer.querySelectorAll(item);
         this.oldCounter = 0;
         this.newCounter = 0;
+        } catch(e) {}
     }
 
     showCards(wraper, count, item) {
@@ -33,8 +35,10 @@ export default class Difference {
     }
 
     init() {
-        this.hideSlide(this.oldItem);
-        this.hideSlide(this.newItem);
-        this.bindTrigger();
+        try {
+            this.hideSlide(this.oldItem);
+            this.hideSlide(this.newItem);
+            this.bindTrigger();
+        } catch(e) {}
     }
 }

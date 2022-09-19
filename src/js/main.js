@@ -5,7 +5,8 @@ import Difference from "./modules/difference";
 import Form from "./modules/form";
 
 window.addEventListener("DOMContentLoaded", () => {
-    const player = new PlayVideo(".showup .play", ".overlay");
+    new PlayVideo(".showup .play", ".overlay").init();
+    new PlayVideo(".module__video-item .play", ".overlay").init();
     const slider = new MainSlider({page: ".page", btns: ".next"});
     const showUpSlider = new MiniSlider({
         page: ".showup__content-slider",
@@ -14,7 +15,7 @@ window.addEventListener("DOMContentLoaded", () => {
         activeClass: "card-active",
         animate: true,
     });
-    const moduleSlider = new MiniSlider({
+    const modulePageSlider = new MiniSlider({
         page: ".modules__content-slider",
         prev: ".modules__info-btns .slick-prev",
         next: ".modules__info-btns .slick-next",
@@ -28,13 +29,17 @@ window.addEventListener("DOMContentLoaded", () => {
         next: ".feed__slider .slick-next",
         activeClass: "feed__item-active",
     });
+    const moduleSlider = new MainSlider({
+        page: ".moduleapp",
+        btns: ".next",
+    });
 
 
     slider.render();
     showUpSlider.init();
-    moduleSlider.init();
+    modulePageSlider.init();
     feedSlider.init();
-    player.init();
+    moduleSlider.render();
     new Difference(".officerold", ".officernew", ".officer__card-item").init();
     new Form(".form").init();
 });

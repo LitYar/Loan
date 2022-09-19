@@ -1,6 +1,6 @@
 {
   "name": "loan",
-  "source": "src/index.html",
+  "source": "src/modules.html",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "start": "parcel --open",
